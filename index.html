@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Expense Diary</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff5e62">
+<link rel="icon" href="diary.jfif" type="image/png">
+<link rel="apple-touch-icon" href="diary.jfif">
+</head>
+<body>
+
+<div id="installBox" class="install-box" style="display:none;">
+  📲 Install My Expense Diary as App? <button onclick="installApp()">Install</button> <span onclick="this.parentElement.style.display='none'" style="cursor:pointer;">✕</span>
+</div>
+
+<div id="landing" class="landing">
+  <img src="diary.jfif" style="width:80px; height:80px; border-radius:20px; margin-bottom:10px;">
+  <h1>💰 My Expense Diary</h1>
+  <p>Smart save for better life ✨</p>
+  <div class="landing-card">
+    <input type="text" id="userName" placeholder="Enter your name..." style="text-align:center;">
+  </div>
+  <button onclick="enterApp()">Enter into My Expense Diary →</button>
+</div>
+
+<div id="app" class="card" style="display:none;">
+  <h1>💰 My Expense Diary</h1>
+  <h3 id="welcome" style="color:#ffcc70;"></h3>
+  <p id="tagline" style="margin-top:-10px; opacity:0.9;"></p>
+
+  <select id="monthSelect" onchange="changeMonth()">
+    <option value="January">January</option><option value="February">February</option>
+    <option value="March">March</option><option value="April">April</option>
+    <option value="May">May</option><option value="June">June</option>
+    <option value="July">July</option><option value="August">August</option>
+    <option value="September">September</option>
+    <option value="October" selected>October</option>
+    <option value="November">November</option><option value="December">December</option>
+  </select>
+
+  <div class="total-box">
+    <h2 id="total">Rs 0</h2>
+    <small id="monthLabel">Total for October</small>
+  </div>
+
+  <h3>Enter Amount:</h3>
+  <div class="grid">
+    <div class="cat-box">🍛 Food <input type="number" id="food" placeholder="Rs"></div>
+    <div class="cat-box">🛺 Auto/Bus <input type="number" id="auto" placeholder="Rs"></div>
+    <div class="cat-box">📚 College <input type="number" id="college" placeholder="Rs"></div>
+    <div class="cat-box">🏠 PG Rent <input type="number" id="rent" placeholder="Rs"></div>
+    <div class="cat-box">🛍️ Shopping <input type="number" id="shopping" placeholder="Rs"></div>
+    <div class="cat-box">🎉 Fun <input type="number" id="fun" placeholder="Rs"></div>
+  </div>
+
+  <div style="display:flex; gap:10px;">
+    <button onclick="clearBoxes()" class="clear" style="flex:1;">Clear Boxes</button>
+    <button onclick="addAll()" style="flex:2;">+ Add All & Save</button>
+  </div>
+
+  <div id="list" class="list"></div>
+  <button onclick="showYearly()" style="background: linear-gradient(to right, #56ab2f, #a8e063);">📅 View All Saved Months</button>
+  <button onclick="backToHome()" class="clear">← Back</button>
+</div>
+
+<div id="yearly" class="card" style="display:none;">
+  <h1>📅 All Saved Months</h1>
+  <div class="total-box"><h2 id="yearTotal">Rs 0</h2><small>Total for Whole Year</small></div>
+  <div id="yearList" class="list"></div>
+  <button onclick="backToApp()">← Back to Diary</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

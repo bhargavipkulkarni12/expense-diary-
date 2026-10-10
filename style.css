@@ -1,0 +1,165 @@
+body{
+  margin:0; 
+  font-family:'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  display:flex; 
+  justify-content:center; 
+  padding:20px; 
+  min-height:100vh; 
+  color:white;
+}
+
+.card,.landing{
+  background: rgba(255,255,255,0.12); 
+  backdrop-filter: blur(12px);
+  width:420px; 
+  padding:25px; 
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.3); 
+  height:fit-content; 
+  text-align:center;
+}
+
+.landing{ 
+  margin-top:80px; 
+}
+
+.landing-card{
+  background: rgba(0,0,0,0.35); 
+  padding:15px; 
+  border-radius:12px; 
+  margin:20px 0;
+}
+
+.landing-card input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  font-size:16px;
+  box-sizing:border-box;
+}
+
+.total-box{
+  background: rgba(0,0,0,0.4); 
+  padding:15px; 
+  border-radius:15px; 
+  margin:15px 0;
+}
+
+.total-box h2{ 
+  margin:0; 
+  font-size:32px; 
+  color:#a8e063; 
+}
+
+select{
+  width:100%; 
+  padding:12px; 
+  margin:8px 0; 
+  border-radius:10px; 
+  border:none;
+  font-size:15px;
+  outline:none;
+}
+
+.grid{ 
+  display:grid; 
+  grid-template-columns:1fr 1fr; 
+  gap:10px; 
+  margin:15px 0; 
+  text-align:left; 
+}
+
+.cat-box{
+  background: rgba(0,0,0,0.35); 
+  padding:10px; 
+  border-radius:10px; 
+  font-size:14px;
+}
+
+.cat-box input{
+  width:100%; 
+  padding:8px; 
+  margin-top:6px; 
+  border-radius:8px; 
+  border:none;
+  outline:none;
+  box-sizing:border-box;
+}
+
+button{
+  width:100%; 
+  padding:12px; 
+  border-radius:10px; 
+  border:none;
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  color:white; 
+  font-weight:bold; 
+  cursor:pointer; 
+  margin-top:10px; 
+  font-size:16px;
+}
+
+.list{ 
+  margin-top:20px; 
+  max-height:250px; 
+  overflow-y:auto; 
+  text-align:left; 
+}
+
+.item{
+  background: rgba(0,0,0,0.35); 
+  padding:10px; 
+  border-radius:10px;
+  margin-bottom:8px; 
+  display:flex; 
+  justify-content:space-between;
+  align-items:center;
+}
+
+.clear{ 
+  background:transparent; 
+  border:1px solid white; 
+}
+
+/* INSTALL POP-UP */
+.install-box{
+  position:fixed; 
+  top:10px; 
+  left:50%; 
+  transform:translateX(-50%);
+  background:white; 
+  color:black; 
+  padding:10px 18px; 
+  border-radius:30px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4); 
+  z-index:999;
+  font-weight:bold; 
+  display:flex; 
+  gap:10px; 
+  align-items:center;
+  font-size:14px;
+}
+
+.install-box button{
+  width:auto; 
+  padding:6px 14px; 
+  margin:0; 
+  background:#302b63; 
+  font-size:13px;
+}
+
+/* DELETE BUTTON FOR MISTAKE */
+.delete-btn{
+  background:#ff4d4d; 
+  color:white; 
+  border:none; 
+  border-radius:50%;
+  width:22px; 
+  height:22px; 
+  cursor:pointer; 
+  font-size:12px; 
+  margin-left:8px;
+}
