@@ -32,16 +32,21 @@
   <p id="tagline" style="margin-top:-10px; opacity:0.9;"></p>
 
   <select id="monthSelect" onchange="changeMonth()">
-    <option value="January">January</option><option value="February">February</option>
-    <option value="March">March</option><option value="April">April</option>
-    <option value="May">May</option><option value="June">June</option>
-    <option value="July">July</option><option value="August">August</option>
+    <option value="January">January</option>
+    <option value="February">February</option>
+    <option value="March">March</option>
+    <option value="April">April</option>
+    <option value="May">May</option>
+    <option value="June">June</option>
+    <option value="July">July</option>
+    <option value="August">August</option>
     <option value="September">September</option>
     <option value="October" selected>October</option>
-    <option value="November">November</option><option value="December">December</option>
+    <option value="November">November</option>
+    <option value="December">December</option>
   </select>
 
-  <!-- NEW: MONTHLY LIMIT SECTION -->
+  <!-- MONTHLY LIMIT SECTION -->
   <div class="limit-box">
     <h3>🎯 Monthly Limit</h3>
     <div style="display:flex; gap:8px; margin-top:8px;">
@@ -56,6 +61,11 @@
   <div class="total-box">
     <h2 id="total">Rs 0</h2>
     <small id="monthLabel">Total for October</small>
+  </div>
+
+  <!-- LIMIT CROSSED ALERT -->
+  <div id="limitAlert" style="display:none; background:#ff0000; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; margin:15px 0; font-size:18px; animation: shake 0.5s;">
+    ❌ LIMIT CROSSED! You spent more than your monthly limit!
   </div>
 
   <h3>Enter Amount:</h3>
@@ -79,11 +89,24 @@
 </div>
 
 <div id="yearly" class="card" style="display:none;">
-  <h1>📅 All Saved Months</h1>
+  <h1>📅 All Saved Months - Full Details</h1>
   <div class="total-box"><h2 id="yearTotal">Rs 0</h2><small>Total for Whole Year</small></div>
+  <div id="yearSummary" style="background:#f0f8ff; padding:15px; border-radius:10px; margin:10px 0;"></div>
   <div id="yearList" class="list"></div>
   <button onclick="backToApp()">← Back to Diary</button>
+  <button onclick="clearAllData()" class="clear" style="background:#ff4d4d;">🗑️ Clear All Year Data</button>
 </div>
+
+<style>
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  25% { transform:translateX(-5px); }
+  75% { transform:translateX(5px); }
+}
+.limit-box { background: #fff3e6; border:2px dashed #ff5e62; border-radius:12px; padding:15px; margin:15px 0; }
+.progress-bar { width:100%; height:18px; background:#ffe6e6; border-radius:10px; overflow:hidden; margin-top:10px; }
+.progress-fill { height:100%; width:0%; background:#56ab2f; transition: width 0.5s ease; }
+</style>
 
 <script src="script.js"></script>
 </body>
