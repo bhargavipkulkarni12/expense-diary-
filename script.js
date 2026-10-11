@@ -1,110 +1,135 @@
-let data = JSON.parse(localStorage.getItem("myDiary")) || {
-  January: [], February: [], March: [], April: [], May: [], June: [],
-  July: [], August: [], September: [], October: [], November: [], December: []
-};
-let currentMonth = "October";
-let userName = localStorage.getItem("diaryUser") || "";
+let currentMonth = document.getElementById('monthSelect')?.value || 'October';
 let deferredPrompt;
+let allData = JSON.parse(localStorage.getItem('expenseData')) || {};
+let limits = JSON.parse(localStorage.getItem('monthlyLimits')) || {};
+let userName = localStorage.getItem('userName') || '';
 
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installBox').style.display = "flex";
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById('installBox').style.display = 'block';
 });
-
-function installApp(){
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(()=>{
-      document.getElementById('installBox').style.display="none";
-      deferredPrompt = null;
-    });
-  }
+function installApp() {
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.getElementById('installBox').style.display='none'; }); }
 }
 
-function enterApp(){
-  let nameInput = document.getElementById('userName').value.trim();
-  if(nameInput) {
-    userName = nameInput;
-    localStorage.setItem("diaryUser", userName);
-  }
-  if(!userName){ alert("Please enter your name"); return; }
-  document.getElementById('landing').style.display="none";
-  document.getElementById('app').style.display="block";
-  document.getElementById('yearly').style.display="none";
-  document.getElementById('welcome').innerText = `Hi ${userName}! 👋`;
-  document.getElementById('tagline').innerText = `${userName}, name your expense...`;
+function enterApp() {
+  const nameInput = document.getElementById('userName').value.trim();
+  if (!nameInput) { alert('Please enter your name di!'); return; }
+  userName = nameInput; localStorage.setItem('userName', userName);
+  document.getElementById('landing').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('welcome').textContent = `Hi ${userName}! 👋`;
+  document.getElementById('tagline').textContent = 'Track smart, save better!';
   changeMonth();
 }
-function backToHome(){
-  document.getElementById('app').style.display="none";
-  document.getElementById('yearly').style.display="none";
-  document.getElementById('landing').style.display="block";
-  document.getElementById('userName').value = userName;
-}
-function backToApp(){
-  document.getElementById('yearly').style.display="none";
-  document.getElementById('app').style.display="block";
-}
-function changeMonth(){
+function backToHome() { document.getElementById('app').style.display='none'; document.getElementById('landing').style.display='flex'; }
+
+if (userName) { document.getElementById('landing').style.display='none'; document.getElementById('app').style.display='block'; document.getElementById('welcome').textContent = `Hi ${userName}! 👋`; }
+
+function changeMonth() {
   currentMonth = document.getElementById('monthSelect').value;
-  showList();
+  document.getElementById('monthLabel').textContent = `Total for ${currentMonth}`;
+  ['food','auto','college','rent','shopping','fun'].forEach(id => document.getElementById(id).value = '');
+  renderList(); updateLimitDisplay();
 }
-function clearBoxes(){
-  ["food","auto","college","rent","shopping","fun"].forEach(id=>document.getElementById(id).value="");
+
+function setLimit() {
+  const limitVal = parseFloat(document.getElementById('limitInput').value);
+  if (!limitVal || limitVal <= 0) { alert('Enter valid limit di!'); return; }
+  limits[currentMonth] = limitVal;
+  localStorage.setItem('monthlyLimits', JSON.stringify(limits));
+  document.getElementById('limitInput').value = '';
+  updateLimitDisplay();
+  alert(`Limit set for ${currentMonth}: Rs ${limitVal}`);
 }
-function addAll(){
-  let food = parseInt(document.getElementById('food').value) || 0;
-  let auto = parseInt(document.getElementById('auto').value) || 0;
-  let college = parseInt(document.getElementById('college').value) || 0;
-  let rent = parseInt(document.getElementById('rent').value) || 0;
-  let shopping = parseInt(document.getElementById('shopping').value) || 0;
-  let fun = parseInt(document.getElementById('fun').value) || 0;
-  if(food+auto+college+rent+shopping+fun === 0){ alert("Enter at least one amount"); return; }
-  if(food) data[currentMonth].push({cat:"🍛 Food", amount:food});
-  if(auto) data[currentMonth].push({cat:"🛺 Auto/Bus", amount:auto});
-  if(college) data[currentMonth].push({cat:"📚 College", amount:college});
-  if(rent) data[currentMonth].push({cat:"🏠 PG Rent", amount:rent});
-  if(shopping) data[currentMonth].push({cat:"🛍️ Shopping", amount:shopping});
-  if(fun) data[currentMonth].push({cat:"🎉 Fun", amount:fun});
-  localStorage.setItem("myDiary", JSON.stringify(data));
-  clearBoxes();
-  showList();
-}
-function showList(){
-  let list = data[currentMonth];
-  let total = list.reduce((s,e)=>s+e.amount,0);
-  document.getElementById('total').innerText = "Rs "+total;
-  document.getElementById('monthLabel').innerText = "Total for "+currentMonth;
-  let div = document.getElementById('list');
-  if(list.length===0) div.innerHTML = `<p style="text-align:center; opacity:0.6;">No data for ${currentMonth}</p>`;
-  else div.innerHTML = list.map((e,i)=>`
-    <div class="item">
-      <span>${e.cat}</span>
-      <span><b>Rs ${e.amount}</b> <button class="delete-btn" onclick="deleteItem(${i})">✕</button></span>
-    </div>`).join('');
-}
-function deleteItem(index){
-  if(confirm("Delete this entry? Mistake clear?")){
-    data[currentMonth].splice(index,1);
-    localStorage.setItem("myDiary", JSON.stringify(data));
-    showList();
+
+function updateLimitDisplay() {
+  const limit = limits[currentMonth] || 0;
+  const total = getMonthTotal();
+  const display = document.getElementById('limitDisplay');
+  const progress = document.getElementById('progress');
+  const status = document.getElementById('limitStatus');
+  
+  if (limit === 0) {
+    display.innerHTML = `<small style="color:#999;">No limit set for ${currentMonth}. Set one to track!</small>`;
+    progress.style.width = '0%'; progress.style.background = '#ff5e62';
+    status.textContent = '';
+    return;
   }
+  
+  let percent = Math.min((total / limit) * 100, 100);
+  let remaining = limit - total;
+  
+  display.innerHTML = `Limit: <b>Rs ${limit}</b> | Spent: <b>Rs ${total}</b> | ${remaining >=0 ? `Remaining: Rs ${remaining}` : `Over by Rs ${Math.abs(remaining)}`}`;
+  progress.style.width = percent + '%';
+  
+  if (percent < 70) { progress.style.background = '#56ab2f'; status.textContent = '✅ Within budget!'; status.style.color='#56ab2f'; }
+  else if (percent < 90) { progress.style.background = '#ffcc00'; status.textContent = '⚠️ 70% used - Be careful!'; status.style.color='#ff9900'; }
+  else if (percent < 100) { progress.style.background = '#ff6600'; status.textContent = '🔥 90% used - Stop spending!'; status.style.color='#ff6600'; }
+  else { progress.style.background = '#ff0000'; status.textContent = '❌ Limit crossed! Over budget!'; status.style.color='red'; }
 }
-function showYearly(){
-  document.getElementById('app').style.display="none";
-  document.getElementById('yearly').style.display="block";
-  let months = Object.keys(data);
-  let yearTotal = 0;
-  let html = "";
-  months.forEach(m=>{
-    let total = data[m].reduce((s,e)=>s+e.amount,0);
-    yearTotal += total;
-    let color = total>0? "#a8e063" : "#888";
-    html += `<div class="item" style="border-left:4px solid ${color}"><span><b>${m}</b></span><b style="color:${color}">Rs ${total}</b></div>`;
+
+function getMonthTotal() {
+  if (!allData[currentMonth]) return 0;
+  return Object.values(allData[currentMonth]).flat().reduce((sum, item) => sum + item.amount, 0);
+}
+
+function addAll() {
+  const categories = ['food','auto','college','rent','shopping','fun'];
+  let hasValue = false;
+  if (!allData[currentMonth]) allData[currentMonth] = {};
+  categories.forEach(cat => {
+    const val = parseFloat(document.getElementById(cat).value);
+    if (val && val > 0) {
+      hasValue = true;
+      if (!allData[currentMonth][cat]) allData[currentMonth][cat] = [];
+      allData[currentMonth][cat].push({ amount: val, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString() });
+    }
   });
-  document.getElementById('yearTotal').innerText = "Rs "+yearTotal;
-  document.getElementById('yearList').innerHTML = html + `<p style="text-align:center; margin-top:10px;">Diary of ${userName} 📓</p>`;
+  if (!hasValue) { alert('Enter at least one amount di!'); return; }
+  localStorage.setItem('expenseData', JSON.stringify(allData));
+  categories.forEach(id => document.getElementById(id).value = '');
+  renderList(); updateLimitDisplay();
+  
+  const limit = limits[currentMonth] || 0;
+  const total = getMonthTotal();
+  if (limit > 0 && total > limit) { alert(`⚠️ Warning di! You crossed your limit of Rs ${limit}! Total is Rs ${total}`); }
+  else if (limit > 0 && total > limit*0.9) { alert(`⚠️ Careful di! 90% of limit used!`); }
 }
-document.getElementById('monthSelect').value = currentMonth;
-if(userName) document.getElementById('userName').value = userName;
+
+function clearBoxes() { ['food','auto','college','rent','shopping','fun'].forEach(id => document.getElementById(id).value = ''); }
+
+function renderList() {
+  const listDiv = document.getElementById('list');
+  const totalEl = document.getElementById('total');
+  if (!allData[currentMonth] || Object.keys(allData[currentMonth]).length === 0) {
+    listDiv.innerHTML = '<p style="text-align:center; opacity:0.6;">No expenses for this month yet!</p>'; totalEl.textContent = 'Rs 0'; return;
+  }
+  let total = 0; let html = '';
+  for (let cat in allData[currentMonth]) {
+    allData[currentMonth][cat].forEach((item, idx) => {
+      total += item.amount;
+      html += `<div class="list-item"><span>${cat} - Rs ${item.amount} <small>(${item.date})</small></span><button onclick="deleteItem('${cat}',${idx})" style="background:red; padding:5px 8px;">X</button></div>`;
+    });
+  }
+  totalEl.textContent = `Rs ${total}`; listDiv.innerHTML = html;
+}
+
+function deleteItem(cat, idx) { allData[currentMonth][cat].splice(idx,1); if (allData[currentMonth][cat].length===0) delete allData[currentMonth][cat]; localStorage.setItem('expenseData', JSON.stringify(allData)); renderList(); updateLimitDisplay(); }
+
+function showYearly() {
+  document.getElementById('app').style.display='none'; document.getElementById('yearly').style.display='block';
+  let yearTotal = 0; let html = '';
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  months.forEach(m => {
+    let monthTotal = 0;
+    if (allData[m]) { for (let cat in allData[m]) { allData[m][cat].forEach(item => monthTotal += item.amount); } }
+    yearTotal += monthTotal;
+    let lim = limits[m] ? ` | Limit: Rs ${limits[m]}` : '';
+    html += `<div class="list-item"><span><b>${m}</b>: Rs ${monthTotal}${lim}</span></div>`;
+  });
+  document.getElementById('yearTotal').textContent = `Rs ${yearTotal}`; document.getElementById('yearList').innerHTML = html;
+}
+function backToApp() { document.getElementById('yearly').style.display='none'; document.getElementById('app').style.display='block'; }
+
+changeMonth();
