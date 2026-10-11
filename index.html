@@ -41,6 +41,18 @@
     <option value="November">November</option><option value="December">December</option>
   </select>
 
+  <!-- NEW: MONTHLY LIMIT SECTION -->
+  <div class="limit-box">
+    <h3>🎯 Monthly Limit</h3>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <input type="number" id="limitInput" placeholder="Set limit Rs e.g. 5000">
+      <button onclick="setLimit()" style="flex:0.5;">Set</button>
+    </div>
+    <div id="limitDisplay" style="margin-top:10px;"></div>
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <small id="limitStatus"></small>
+  </div>
+
   <div class="total-box">
     <h2 id="total">Rs 0</h2>
     <small id="monthLabel">Total for October</small>
