@@ -1,16 +1,15 @@
 {
   "name": "My Expense Diary",
-  "short_name": "Expense Diary",
-  "description": "Smart save to better life",
-  "start_url": "/index.html",
+  "short_name": "Expense",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#302b63",
+  "background_color": "#ff5e62",
   "theme_color": "#ff5e62",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/4825/4825123.png",
+      "src": "diary.jpg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ]
 }
